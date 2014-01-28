@@ -1,6 +1,6 @@
 class RegistrationsController < ApplicationController
   before_action :set_registration, only: [:show, :edit, :update, :destroy]
-  before_action :authenticate, :except => :create
+  before_action :authenticate, :except => :create,  :if => Proc.new { Rails.env != 'development'}
   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
 
   # GET /registrations
@@ -26,7 +26,13 @@ class RegistrationsController < ApplicationController
   # POST /registrations
   # POST /registrations.json
   def create
-    @registration = Registration.new(registration_params)
+
+    @registration = Registration.first(email: registration_params[:email])
+    if @registration
+      @registration.update_attributes(registration_params)
+    else
+      @registration = Registration.new(registration_params)
+    end
 
     respond_to do |format|
       if @registration.save
@@ -76,8 +82,9 @@ class RegistrationsController < ApplicationController
 
   protected
     def authenticate
+      
       authenticate_or_request_with_http_basic do |username, password|
-        username == ENV['USERNAME'] && password == ENV['PASSWORD']
+        (username == ENV['USERNAME'] && password == ENV['PASSWORD'])
       end
     end
 end

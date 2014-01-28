@@ -7,5 +7,7 @@ class Registration
 	key :city,			String
 	key :country,		String
 
+	validates_presence_of :firstname, :lastname, :email, :city, :country
+
 	timestamps!
 end
