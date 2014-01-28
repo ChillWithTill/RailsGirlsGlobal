@@ -1,5 +1,6 @@
 class RegistrationsController < ApplicationController
   before_action :set_registration, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate
   skip_before_filter :verify_authenticity_token, :if => Proc.new { |c| c.request.format == 'application/json' }
 
   # GET /registrations
@@ -71,5 +72,12 @@ class RegistrationsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def registration_params
       params.require(:registration).permit(:firstname, :lastname, :email)
+    end
+
+  protected
+    def authenticate
+      authenticate_or_request_with_http_basic do |username, password|
+        username == "foo" && password == "bar"
+      end
     end
 end
