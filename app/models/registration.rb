@@ -6,8 +6,9 @@ class Registration
 	key :email,			String
 	key :city,			String
 	key :country,		String
+	key :type,			String
 
-	validates_presence_of :firstname, :lastname, :email, :city, :country
+	validates_presence_of :firstname, :lastname, :email, :city, :country, :type
 
 	timestamps!
 end
